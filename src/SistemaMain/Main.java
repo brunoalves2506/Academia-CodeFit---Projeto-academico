@@ -3,12 +3,14 @@
 package SistemaMain;
 
 //Imports importantes para o sistema--
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 //Imports dos pacotes--
+import DAO.*;
 import Model.*;
 import Service.*;
 import Util.*;
@@ -41,11 +43,17 @@ public class Main{
     public static void main(String[] args) {
 
         //Requisição dos pacotes para utilização no Main--
-        AlunoService a = new AlunoService();
-        InstrutorService i = new InstrutorService();
-        PlanoService p = new PlanoService();
+        AlunoService alunoService = new AlunoService();
+        InstrutorService instrutorService = new InstrutorService();
+        PlanoService planoService = new PlanoService();
+        AulaColetivaService aulaColetivaService = new AulaColetivaService();
         EntradaUtil entradaUtil = new EntradaUtil(scanner);
         ViewMenu viewMenu = new ViewMenu();
+        ConexaoBD conexaoBD = new ConexaoBD();
+        AlunoDAO alunoDAO = new AlunoDAO();
+        InstrutorDAO instrutorDAO = new InstrutorDAO();
+        PlanoDAO planoDAO = new PlanoDAO();
+        AulaColetivaDAO aulaColetivaDAO = new AulaColetivaDAO();
 
         //Parâmetros da função escolherOpcao()--
         int opcao = 0;
@@ -59,6 +67,7 @@ public class Main{
 
         //Execução do código--
         do {
+
             viewMenu.exibirMenuPrincipal();
 
             opcao = escolherOpcao(entradaUtil);
@@ -95,11 +104,11 @@ public class Main{
                                 String emailAluno = entradaUtil.lerEmail("Informe o email do Aluno: ");
 
                                 //Exibe os planos para que um seja atribuído ao aluno--
-                                p.exibirPlanos(planos);
+                                planoService.exibirPlanos(planos);
 
                                 int planoId = entradaUtil.lerInt("Informe o ID do Plano: ");
 
-                                Plano planoEscolhido = p.buscarPlanoPorId(planos, planoId);
+                                Plano planoEscolhido = planoService.buscarPlanoPorId(planos, planoId);
 
                                 if (planoEscolhido == null){
                                     System.out.println("Plano não encontrado! Encerrando cadastro.");
@@ -109,15 +118,14 @@ public class Main{
                                 //Cria o objeto Aluno--
                                 Aluno aluno = new Aluno(nomeAluno, cpfAluno, dataNascimentoAluno, telefoneAluno, emailAluno, planoEscolhido);
 
-                                //Adiciona o objeto na arraylist Pessoa--
-                                pessoas.add(aluno);
-                                System.out.println("Aluno cadastrado com sucesso!");
+                                //Adiciona o objeto no Banco de Dados através do DAO--
+                                alunoDAO.cadastrarAluno(aluno);
                                 break;
 
                             //Exibição de Alunos--
                             case 4:
 
-                                a.exibirAluno(pessoas);
+                                alunoService.exibirAluno(pessoas);
                                 break;
 
                         }
@@ -152,20 +160,19 @@ public class Main{
 
                                 LocalTime horarioAtivo = entradaUtil.lerHorario("Digite o horário ativo (HH:MM):");
 
-                                double salario = entradaUtil.lerDouble("Informe o salário do Instrutor: ");
+                                BigDecimal salario = entradaUtil.lerBigDecimal("Informe o salário do Instrutor: ");
 
                                 //Cria o objeto Instrutor--
                                 Instrutor instrutor = new Instrutor(nomeInstrutor, cpfInstrutor, dataNascimentoInstrutor, telefoneInstrutor, emailInstrutor, especialidade, horarioAtivo, salario
                                 );
 
-                                //Adiciona o objeto na arraylist Pessoa--
-                                pessoas.add(instrutor);
-                                System.out.println("Instrutor cadastrado com sucesso!");
+                                //Adiciona o objeto no Banco de Dados através do DAO--
+                                instrutorDAO.cadastrarInstrutor(instrutor);
                                 break;
 
                             //Exibição de Instrutores--
                             case 4:
-                                i.exibirInstrutores(pessoas);
+                                instrutorService.exibirInstrutores(pessoas);
                                 break;
                         }
 
@@ -191,7 +198,7 @@ public class Main{
 
                                 String descricaoPlano = entradaUtil.lerTexto("Informe a descrição do plano: ");
 
-                                double valorMensal = entradaUtil.lerDouble("Informe o valor do plano: ");
+                                BigDecimal valorMensal = entradaUtil.lerBigDecimal("Informe o valor do plano: ");
 
                                 int duracaoMeses = entradaUtil.lerInt("Informe a duração em meses: ");
 
@@ -200,14 +207,13 @@ public class Main{
                                 //Criação do objeto Plano--
                                 Plano plano = new Plano (idPlano, nomePlano, descricaoPlano, valorMensal, duracaoMeses, beneficios);
 
-                                //Adição do plano na arraylist planos--
-                                planos.add(plano);
-                                System.out.println("Plano cadastrado com sucesso!");
+                                //Adição do plano no Banco de Dados através do metodo DAO--
+                                planoDAO.cadastrarPlano(plano);
                                 break;
 
                             //Exibição dos Planos--
                             case 4:
-                                p.exibirPlanos(planos);
+                                planoService.exibirPlanos(planos);
                                 break;
 
                         }
@@ -223,6 +229,47 @@ public class Main{
                         opcaoAulas = escolherOpcao(entradaUtil);
 
                         switch (opcaoAulas){
+
+                            //Cadastro de aula--
+                            case 1:
+
+                                //Recebe os parâmetros do objeto Aula--
+                                int idAula = entradaUtil.lerInt("Informe o id da aula: ");
+
+                                instrutorService.exibirInstrutores(pessoas);
+
+                                String escolherInstrutor = entradaUtil.lerCpf("Informe o cpf do instrutor que vai dar a aula: ");
+
+                                Instrutor instrutorAula = (Instrutor) instrutorService.buscarInstrutorPorCpf(pessoas, escolherInstrutor);
+
+                                if (instrutorAula == null){
+                                    System.out.println("Instrutor não encontrado. Encerrando cadastro da aula.");
+                                    break;
+                                }
+
+                                String nomeAula = entradaUtil.lerTexto("Informe o nome da aula: ");
+
+                                LocalTime horarioAula = entradaUtil.lerHorario("Informe o horário da aula: ");
+
+                                //Verifica se o horário da aula cadastrada bate com o horário de atividade do instrutor--
+                                if (horarioAula.isBefore(instrutorAula.getHorarioAtivo())){
+                                    System.out.println("O horário de atuação do instrutor não bate com a aula! encerrando cadastro.");
+                                    break;
+                                }
+
+                                int minutosAula = entradaUtil.lerInt("Informe a duração em minutos da aula: ");
+
+                                //Cria o objeto Aula--
+                                AulaColetiva aulaColetiva = new AulaColetiva(idAula, instrutorAula, nomeAula, horarioAula, minutosAula);
+
+                                //Adiciona a aula no Banco de Dados através do DAO--
+                                aulaColetivaDAO.cadastrarAulaColetiva(aulaColetiva);
+                                break;
+
+                            case 2:
+
+                                //Exibe todas as aulas cadastradas--
+                                aulaColetivaService.exibirAulaColetiva(aulasColetivas);
 
                         }
 

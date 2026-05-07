@@ -1,17 +1,19 @@
 package Model;
 
+import java.math.BigDecimal;
+
 //Classe Plano com correlação a subclasse Aluno--
 public class Plano {
     private int idPlano;
     private String nomePlano;
     private String descricaoPlano;
-    private double valorMensal;
+    private BigDecimal valorMensal;
     private int duracaoMeses;
     private String beneficios;
 
     //Construtor--
     public Plano(int idPlano, String nomePlano,
-                 String descricaoPlano, double valorMensal, int duracaoMeses, String beneficios){
+                 String descricaoPlano, BigDecimal valorMensal, int duracaoMeses, String beneficios){
         setIdPlano(idPlano);
         setNomePlano(nomePlano);
         setDescricaoPlano(descricaoPlano);
@@ -57,14 +59,14 @@ public class Plano {
         }
     }
 
-    public double getValorMensal() {
+    public BigDecimal getValorMensal() {
         return valorMensal;
     }
 
-    public void setValorMensal(double valorMensal) {
-        if(valorMensal > 0){
+    public void setValorMensal(BigDecimal valorMensal) {
+        if(valorMensal.compareTo(BigDecimal.ZERO) > 0){
             this.valorMensal = valorMensal;
-        }else{
+        } else {
             System.out.println("O valor do plano deve ser maior que zero.");
         }
     }
@@ -93,7 +95,7 @@ public class Plano {
         }
     }
 
-    //toString que retorna as iformações do Plano--
+    //toString que retorna as informações do Plano--
     @Override
     public String toString(){
         return "====================PLANO " + getNomePlano() + " ====================\n" +

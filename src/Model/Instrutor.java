@@ -3,6 +3,7 @@
 package Model;
 
 //Imports para definir data e horário--
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -10,10 +11,10 @@ import java.time.LocalTime;
 public class Instrutor extends Pessoa{
     private String especialidade;
     private LocalTime horarioAtivo;
-    private double salario;
+    private BigDecimal salario;
 
     //Construtor--
-    public Instrutor(String nome, String cpf, LocalDate dataNascimento, String telefone, String email, String especialidade, LocalTime horarioAtivo, double salario){
+    public Instrutor(String nome, String cpf, LocalDate dataNascimento, String telefone, String email, String especialidade, LocalTime horarioAtivo, BigDecimal salario){
        super(nome, cpf, dataNascimento, telefone, email);
         setEspecialidade(especialidade);
         setHorarioAtivo(horarioAtivo);
@@ -43,12 +44,12 @@ public class Instrutor extends Pessoa{
         this.horarioAtivo = horarioAtivo;
     }
 
-    public double getSalario() {
+    public BigDecimal getSalario() {
         return salario;
     }
 
-    public void setSalario(double salario) {
-        if(salario < 2900) {
+    public void setSalario(BigDecimal salario) {
+        if(salario.compareTo(new BigDecimal(2900)) < 0) {
             throw new IllegalArgumentException("Salário abaixo do piso");
         }
 
@@ -66,17 +67,16 @@ public class Instrutor extends Pessoa{
                 " | Data de nascimento. " + getDataNascimento() +
                 " | Telefone. " + tratamentoDeSaida(getTelefone()) +
                 " | Email. " + tratamentoDeSaida(getEmail()) +
-                " | Salário. R$" + getSalario() + "\n" +
-                "=====================================================================================================================================";
+                " | Salário. R$" + getSalario();
     }
 
     //Conceder aumento de salário ao instrutor--
-        public void aumentoSalario(double aumento){
-            if (aumento <= 0){
-                throw new IllegalArgumentException("Aumento inválido");
-            }
-            this.salario += aumento;
+    public void aumentoSalario(BigDecimal aumento){
+        if (aumento.compareTo(BigDecimal.ZERO) <= 0){
+            throw new IllegalArgumentException("Aumento inválido");
         }
+        this.salario = this.salario.add(aumento);
+    }
 
     }
 

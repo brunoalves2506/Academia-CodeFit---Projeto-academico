@@ -4,6 +4,7 @@ package Model;
 
 //Import para definir Data--
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 //Classe Aluno--
 public class Aluno extends Pessoa{
@@ -27,6 +28,18 @@ public class Aluno extends Pessoa{
         return plano;
     }
 
+    //Possibilita o aluno de acessar a academia caso não seja Pendente--
+    public boolean acessarAcademia(){
+
+        if(getPlano().getNomePlano() != "Pendente"){
+            return true;
+        }else{
+            System.out.println("O aluno não tem acesso.");
+            return false;
+        }
+
+    }
+
     //Sobreposição do método Abstrato toString() da classe pai Pessoa--
     @Override
     public String toString() {
@@ -36,8 +49,7 @@ public class Aluno extends Pessoa{
                 "| Data de nascimento. " + getDataNascimento() +
                 "| Telefone. " + tratamentoDeSaida(getTelefone()) +
                 "| Email. " + tratamentoDeSaida(getEmail()) +
-                "| Plano. " + getPlano().getNomePlano() + "\n" +
-                "================================================================================================================================";
+                "| Plano. " + getPlano().getNomePlano();
     }
 
 }

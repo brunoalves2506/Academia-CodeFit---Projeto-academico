@@ -13,11 +13,12 @@ public class InstrutorService {
 
         boolean encontrado = false;
 
+        System.out.println("=======================================================INSTRUTORES====================================================================\n");
+
         for (Pessoa p : pessoas){
 
             if(p instanceof Instrutor){
 
-                System.out.println("=======================================================INSTRUTOR====================================================================\n");
                 System.out.println(p);
 
                 encontrado = true;
@@ -26,10 +27,21 @@ public class InstrutorService {
         }
 
         if(!encontrado) {
-            System.out.println("=======================================================INSTRUTOR====================================================================\n");
+            System.out.println("=======================================================INSTRUTORES====================================================================\n");
             System.out.println("Nenhum instrutor cadastrado.");
             System.out.println("================================================================================================================================\n");
         }
+    }
+
+    //Busca o instrutor pelo cpf--
+    public Pessoa buscarInstrutorPorCpf(ArrayList<Pessoa> pessoas, String escolherInstrutor){
+
+        for (Pessoa p: pessoas){
+            if (p.getCpf().equals(escolherInstrutor)){
+                return p;
+            }
+        }
+        return null;
     }
 
 }
