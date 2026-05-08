@@ -1,5 +1,6 @@
 package Util;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -111,6 +112,25 @@ public class EntradaUtil {
             }
             System.out.println("Email inválido. Digite um email válido (ex: nome@email.com).");
         }
+    }
+
+    //Lê um valor numeric (Big decimal) e garante o formato correto--
+    public BigDecimal lerBigDecimal(String mensagem) {
+        Scanner scanner = new Scanner(System.in);
+        BigDecimal valor = null;
+
+        while (valor == null) {
+            System.out.print(mensagem);
+            String entrada = scanner.nextLine().trim().replace(",", ".");
+
+            try {
+                valor = new BigDecimal(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Valor inválido. Digite um número válido (ex: 99.90).");
+            }
+        }
+
+        return valor;
     }
 
 }

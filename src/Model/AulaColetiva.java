@@ -1,19 +1,19 @@
 package Model;
 
 //import para definição de hora--
-import java.sql.Time;
+import java.time.LocalTime;
 
 //Classe AulaColetiva com correlação a subclasse Instrutor--
 public class AulaColetiva {
     private int idAula;
-    private Instrutor instrutor;
+    private Pessoa instrutor;
     private String nomeAula;
     private int capacidadeMax;
-    private Time horarioAula;
+    private LocalTime horarioAula;
     private int duracaoAula;
 
     //Construtor--
-    public AulaColetiva(int idAula, Instrutor instrutor, String nomeAula, Time horarioAula, int duracaoAula){
+    public AulaColetiva(int idAula, Instrutor instrutor, String nomeAula, LocalTime horarioAula, int duracaoAula){
         setIdAula(idAula);
         setInstrutor(instrutor);
         setNomeAula(nomeAula);
@@ -36,7 +36,7 @@ public class AulaColetiva {
     }
 
     public Instrutor getInstrutor() {
-        return instrutor;
+        return (Instrutor) instrutor;
     }
 
     public void setInstrutor(Instrutor instrutor) {
@@ -71,11 +71,11 @@ public class AulaColetiva {
         }
     }
 
-    public Time getHorarioAula() {
+    public LocalTime getHorarioAula() {
         return horarioAula;
     }
 
-    public void setHorarioAula(Time horarioAula) {
+    public void setHorarioAula(LocalTime horarioAula) {
         if(horarioAula != null){
             this.horarioAula = horarioAula;
         }else{
@@ -93,6 +93,16 @@ public class AulaColetiva {
         }else{
             System.out.println("A duração em minutos da aula deve ser maior que zero.");
         }
+    }
+
+    //toString que retorna as informações da Aula Coletiva--
+    @Override
+    public String toString(){
+        return "====================AULA COLETIVA " + getNomeAula() + " ====================\n" +
+                "ID. " + getIdAula() + "\n" +
+                "Instrutor. " + getInstrutor().getNome() + "\n" +
+                "Horario da aula. " + getHorarioAula() + "\n" +
+                "Duração. " + getDuracaoAula() + " minutos";
     }
 
 }

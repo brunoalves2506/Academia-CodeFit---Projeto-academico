@@ -55,6 +55,7 @@ public class ViewMenu {
         System.out.println("1. CADASTRAR AULA");
         System.out.println("2. ATUALIZAR AULA");
         System.out.println("3. EXCLUIR AULA");
+        System.out.println("4. EXIBIR AULAS");
         System.out.println("0. VOLTAR AO MENU PRINCIPAL");
         System.out.println("======================================");
     }

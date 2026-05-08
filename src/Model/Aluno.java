@@ -27,6 +27,11 @@ public class Aluno extends Pessoa{
         return plano;
     }
 
+    //Retorna True se o plano estiver ativo--
+    public void verificaPlano(){
+
+    }
+
     //Sobreposição do método Abstrato toString() da classe pai Pessoa--
     @Override
     public String toString() {

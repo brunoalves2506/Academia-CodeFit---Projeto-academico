@@ -6,16 +6,16 @@ import java.time.LocalDate;
 
 //Classe pessoa--
 public abstract class Pessoa {
-    private String nome;
     private String cpf;
+    private String nome;
     private LocalDate dataNascimento;
     private String telefone;
     private String email;
 
     //Construtor--
-    public Pessoa(String nome, String cpf, LocalDate dataNascimento, String telefone, String email){
-        setNome(nome);
+    public Pessoa(String cpf, String nome, LocalDate dataNascimento, String telefone, String email){
         setCpf(cpf);
+        setNome(nome);
         setDataNascimento(dataNascimento);
         setTelefone(telefone);
         setEmail(email);
