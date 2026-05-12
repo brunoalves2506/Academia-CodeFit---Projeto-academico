@@ -1,0 +1,278 @@
+Index: src/Service/AlunoService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Service;\r\n\r\n//Imports uteis para o pacote--\r\nimport java.util.ArrayList;\r\n\r\n//Import dos Pacotes--\r\nimport Model.*;\r\n\r\npublic class AlunoService {\r\n\r\n    //Função exibirAluno() que retorna os Alunos armazenados na arraylist pessoas--\r\n    public void exibirAluno(ArrayList<Pessoa> pessoas){\r\n\r\n        boolean encontrado = false;\r\n\r\n        System.out.println(\"=======================================================ALUNOS====================================================================\\n\");\r\n\r\n        for (Pessoa p : pessoas){\r\n\r\n            if(p instanceof Aluno){\r\n\r\n                System.out.println(p);\r\n\r\n                encontrado = true;\r\n            }\r\n        }\r\n\r\n        if(!encontrado) {\r\n            System.out.println(\"=======================================================ALUNOS====================================================================\\n\");\r\n            System.out.println(\"Nenhum aluno cadastrado.\");\r\n            System.out.println(\"================================================================================================================================\\n\");\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Service/AlunoService.java b/src/Service/AlunoService.java
+--- a/src/Service/AlunoService.java	(revision 8a9bf0a6f79af43bb056c37b2856156a40080eda)
++++ b/src/Service/AlunoService.java	(date 1778203912469)
+@@ -1,9 +1,14 @@
+ package Service;
+ 
+ //Imports uteis para o pacote--
++import java.sql.ResultSet;
++import java.sql.SQLException;
++import java.sql.Statement;
+ import java.util.ArrayList;
+ 
+ //Import dos Pacotes--
++import DAO.ConexaoBD;
++import DAO.PlanoDAO;
+ import Model.*;
+ 
+ public class AlunoService {
+@@ -32,4 +37,41 @@
+         }
+     }
+ 
++    //Exibe os Alunos cadastrados no Banco de Dados--
++    public void exibirAlunosBd(){
++        String sql = "SELECT * FROM aluno";
++
++        try(Statement stmt = ConexaoBD.getConexao().createStatement();
++            ResultSet rs = stmt.executeQuery(sql)){
++
++            if (!rs.next()){
++                System.out.println("=======================================================ALUNOS====================================================================\n");
++                System.out.println("Nenhum aluno cadastrado.");
++                System.out.println("=================================================================================================================================\n");
++                return;
++            }
++
++            System.out.println("=======================================================ALUNOS====================================================================\n");
++
++            do {
++                Plano plano = new PlanoService().buscarPlanoPorId(rs.getInt("idplano"));
++                Aluno aluno = new Aluno(
++                        rs.getString("nome"),
++                        rs.getString("cpfaluno"),
++                        rs.getDate("datanascimentoaluno").toLocalDate(),
++                        rs.getString("telefonealuno"),
++                        rs.getString("emailaluno"),
++                        plano
++                );
++
++                System.out.println(aluno);
++
++            } while (rs.next());
++
++        } catch (SQLException e){
++            System.out.println("Erro ao buscar Aluno: " + e.getMessage());
++        }
++
++    }
++
+ }
+Index: src/Service/InstrutorService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Service;\r\n\r\n//Imports uteis para o pacote--\r\nimport java.util.ArrayList;\r\n\r\n//Import dos Pacotes--\r\nimport Model.*;\r\n\r\npublic class InstrutorService {\r\n\r\n    //Função exibirInstrutores() que retorna os instrutores armazenados na arraylist pessoas--\r\n    public void exibirInstrutores(ArrayList<Pessoa> pessoas){\r\n\r\n        boolean encontrado = false;\r\n\r\n        System.out.println(\"=======================================================INSTRUTORES====================================================================\\n\");\r\n\r\n        for (Pessoa p : pessoas){\r\n\r\n            if(p instanceof Instrutor){\r\n\r\n                System.out.println(p);\r\n\r\n                encontrado = true;\r\n\r\n            }\r\n        }\r\n\r\n        if(!encontrado) {\r\n            System.out.println(\"=======================================================INSTRUTORES====================================================================\\n\");\r\n            System.out.println(\"Nenhum instrutor cadastrado.\");\r\n            System.out.println(\"================================================================================================================================\\n\");\r\n        }\r\n    }\r\n\r\n    //Busca o instrutor pelo cpf--\r\n    public Pessoa buscarInstrutorPorCpf(ArrayList<Pessoa> pessoas, String escolherInstrutor){\r\n\r\n        for (Pessoa p: pessoas){\r\n            if (p.getCpf().equals(escolherInstrutor)){\r\n                return p;\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Service/InstrutorService.java b/src/Service/InstrutorService.java
+--- a/src/Service/InstrutorService.java	(revision 8a9bf0a6f79af43bb056c37b2856156a40080eda)
++++ b/src/Service/InstrutorService.java	(date 1778202819309)
+@@ -1,9 +1,13 @@
+ package Service;
+ 
+ //Imports uteis para o pacote--
++import java.sql.ResultSet;
++import java.sql.SQLException;
++import java.sql.Statement;
+ import java.util.ArrayList;
+ 
+ //Import dos Pacotes--
++import DAO.ConexaoBD;
+ import Model.*;
+ 
+ public class InstrutorService {
+@@ -29,9 +33,47 @@
+         if(!encontrado) {
+             System.out.println("=======================================================INSTRUTORES====================================================================\n");
+             System.out.println("Nenhum instrutor cadastrado.");
+-            System.out.println("================================================================================================================================\n");
++            System.out.println("======================================================================================================================================\n");
+         }
+     }
++
++    //Exibe os Instrutores cadastrados no Banco de Dados--
++    public void exibirInstrutoresBd(){
++        String sql = "SELECT * FROM instrutor";
++
++        try(Statement stmt = ConexaoBD.getConexao().createStatement();
++            ResultSet rs = stmt.executeQuery(sql)){
++
++            if (!rs.next()){
++                System.out.println("=======================================================INSTRUTORES====================================================================\n");
++                System.out.println("Nenhum instrutor cadastrado.");
++                System.out.println("======================================================================================================================================\n");
++                return;
++            }
++
++            System.out.println("=======================================================INSTRUTORES====================================================================\n");
++
++            do {
++                Instrutor instrutor = new Instrutor(
++                        rs.getString("nomeinstrutor"),
++                        rs.getString("cpfinstrutor"),
++                        rs.getDate("datanascimentoinstrutor").toLocalDate(),
++                        rs.getString("telefoneinstrutor"),
++                        rs.getString("emailinstrutor"),
++                        rs.getString("especialidade"),
++                        rs.getTime("horarioativo").toLocalTime(),
++                        rs.getBigDecimal("salario")
++                );
++
++                System.out.println(instrutor);
++
++            } while (rs.next());
++
++        } catch (SQLException e){
++            System.out.println("Erro ao buscar Instrutor: " + e.getMessage());
++        }
++
++    }
+ 
+     //Busca o instrutor pelo cpf--
+     public Pessoa buscarInstrutorPorCpf(ArrayList<Pessoa> pessoas, String escolherInstrutor){
+Index: src/Service/PlanoService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Service;\r\n\r\n//Imports uteis para o pacote--\r\nimport java.util.ArrayList;\r\n\r\n//Import do pacote Plano--\r\nimport Model.Plano;\r\n\r\npublic class PlanoService {\r\n\r\n    public void exibirPlanos(ArrayList<Plano> planos){\r\n\r\n        if(planos.isEmpty()){\r\n            System.out.println(\"Nenhum plano cadastrado.\");\r\n        }\r\n        for (Plano p : planos){\r\n            System.out.println(p);\r\n        }\r\n\r\n    }\r\n\r\n    //Função buscarPlanoPorId() que retorna o id do plano escolhido--\r\n    public Plano buscarPlanoPorId(ArrayList<Plano> planos, int planoId){\r\n\r\n        for (Plano p : planos){\r\n            if (p.getIdPlano() == planoId){\r\n                return p;\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Service/PlanoService.java b/src/Service/PlanoService.java
+--- a/src/Service/PlanoService.java	(revision 8a9bf0a6f79af43bb056c37b2856156a40080eda)
++++ b/src/Service/PlanoService.java	(date 1778205353261)
+@@ -1,31 +1,92 @@
+ package Service;
+ 
+ //Imports uteis para o pacote--
++import java.sql.PreparedStatement;
++import java.sql.ResultSet;
++import java.sql.SQLException;
++import java.sql.Statement;
+ import java.util.ArrayList;
+ 
+ //Import do pacote Plano--
++import DAO.ConexaoBD;
+ import Model.Plano;
+ 
+ public class PlanoService {
+ 
+-    public void exibirPlanos(ArrayList<Plano> planos){
++    //Verifica se a tabela plano do Banco de Dados está vazia--
++    public void verificarPlanosVazio(){
++        String sql = "SELECT * FROM plano";
+ 
+-        if(planos.isEmpty()){
+-            System.out.println("Nenhum plano cadastrado.");
++        try(Statement stmt = ConexaoBD.getConexao().createStatement();
++            ResultSet rs = stmt.executeQuery(sql)){
++
++            if (!rs.next()){
++                System.out.println("=======================================================PLANOS====================================================================\n");
++                System.out.println("Nenhum plano cadastrado.");
++                System.out.println("=================================================================================================================================\n");
++                return;
++            }
++
++        } catch (SQLException e){
++            System.out.println("Erro ao buscar Planos: " + e.getMessage());
+         }
+-        for (Plano p : planos){
+-            System.out.println(p);
++    }
++
++    //Exibe os planos cadastrados no Banco de Dados--
++    public void exibirPlanoBd(){
++        String sql = "SELECT * FROM plano";
++
++        try(Statement stmt = ConexaoBD.getConexao().createStatement();
++        ResultSet rs = stmt.executeQuery(sql)){
++
++            if (!rs.next()){
++                System.out.println("=======================================================PLANOS====================================================================\n");
++                System.out.println("Nenhum plano cadastrado.");
++                System.out.println("=================================================================================================================================\n");
++                return;
++            }
++
++            do {
++                Plano plano = new Plano(
++                        rs.getInt("idplano"),
++                        rs.getString("nomeplano"),
++                        rs.getString("descricaoplano"),
++                        rs.getBigDecimal("valormensalplano"),
++                        rs.getInt("duracaomeses"),
++                        rs.getString("beneficiosplano")
++                );
++
++                System.out.println(plano);
++
++            } while (rs.next());
++
++        } catch (SQLException e){
++            System.out.println("Erro ao buscar Planos: " + e.getMessage());
+         }
+ 
+     }
+ 
+     //Função buscarPlanoPorId() que retorna o id do plano escolhido--
+-    public Plano buscarPlanoPorId(ArrayList<Plano> planos, int planoId){
++    public Plano buscarPlanoPorId(int idplano) {
++        String sql = "SELECT * FROM plano WHERE idplano = ?";
++
++        try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
++            stmt.setInt(1, idplano);
++            ResultSet rs = stmt.executeQuery();
+ 
+-        for (Plano p : planos){
+-            if (p.getIdPlano() == planoId){
+-                return p;
++            if (rs.next()) {
++                return new Plano(
++                        rs.getInt("idplano"),
++                        rs.getString("nomeplano"),
++                        rs.getString("descricaoplano"),
++                        rs.getBigDecimal("valormensal"),
++                        rs.getInt("duracaomeses"),
++                        rs.getString("beneficios")
++                );
+             }
++
++        } catch (SQLException e) {
++            System.out.println("Erro ao buscar plano: " + e.getMessage());
+         }
+         return null;
+     }
+Index: Academia codeFit.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"JAVA_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\" inherit-compiler-output=\"true\">\r\n    <exclude-output />\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <sourceFolder url=\"file://$MODULE_DIR$/Academia codeFit2.0/src\" isTestSource=\"false\" />\r\n      <sourceFolder url=\"file://$MODULE_DIR$/src\" isTestSource=\"false\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Academia codeFit.iml b/Academia codeFit.iml
+--- a/Academia codeFit.iml	(revision 8a9bf0a6f79af43bb056c37b2856156a40080eda)
++++ b/Academia codeFit.iml	(date 1778197948347)
+@@ -1,12 +1,9 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <module type="JAVA_MODULE" version="4">
+-  <component name="NewModuleRootManager" inherit-compiler-output="true">
+-    <exclude-output />
+-    <content url="file://$MODULE_DIR$">
++  <component name="AdditionalModuleElements">
++    <content url="file://$MODULE_DIR$" dumb="true">
+       <sourceFolder url="file://$MODULE_DIR$/Academia codeFit2.0/src" isTestSource="false" />
+       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+     </content>
+-    <orderEntry type="inheritedJdk" />
+-    <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file

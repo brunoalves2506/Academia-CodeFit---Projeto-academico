@@ -1,0 +1,131 @@
+Index: src/SistemaMain/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//Execução do código Main--\r\n\r\npackage SistemaMain;\r\n\r\n//Imports importantes para o sistema--\r\nimport java.math.BigDecimal;\r\nimport java.time.LocalDate;\r\nimport java.time.LocalTime;\r\nimport java.util.ArrayList;\r\nimport java.util.Scanner;\r\n\r\n//Imports dos pacotes--\r\nimport DAO.*;\r\nimport Model.*;\r\nimport Service.*;\r\nimport Util.*;\r\nimport Service.InstrutorService;\r\nimport Service.PlanoService;\r\nimport View.ViewMenu;\r\n\r\npublic class Main{\r\n\r\n    //Função escolherOpcao() com validação que retorna um valor inteiro--\r\n    private static int escolherOpcao(EntradaUtil entradaUtil){\r\n        return entradaUtil.lerInt(\"Informe a ação a ser tomada: \");\r\n    }\r\n\r\n    //Arraylist que armazena as Pessoas do sistema--\r\n    private static ArrayList <Pessoa> pessoas = new ArrayList<>();\r\n\r\n    //Arraylist que armazena os Planos do sistema--\r\n    private static ArrayList <Plano> planos = new ArrayList<>();\r\n\r\n    //Arraylist que armazena as Inscrições do sistema--\r\n    private static ArrayList <Inscricao> inscricoes = new ArrayList<>();\r\n\r\n    //Arraylist que armazena as Aulas Coletivas do sistema--\r\n    private static ArrayList <AulaColetiva> aulasColetivas = new ArrayList<>();\r\n\r\n    //Criação do scanner--\r\n    private static Scanner scanner = new Scanner(System.in);\r\n\r\n    public static void main(String[] args) {\r\n\r\n        //Requisição dos pacotes para utilização no Main--\r\n        AlunoService alunoService = new AlunoService();\r\n        InstrutorService instrutorService = new InstrutorService();\r\n        PlanoService planoService = new PlanoService();\r\n        AulaColetivaService aulaColetivaService = new AulaColetivaService();\r\n        EntradaUtil entradaUtil = new EntradaUtil(scanner);\r\n        ViewMenu viewMenu = new ViewMenu();\r\n        ConexaoBD conexaoBD = new ConexaoBD();\r\n        AlunoDAO alunoDAO = new AlunoDAO();\r\n        InstrutorDAO instrutorDAO = new InstrutorDAO();\r\n        PlanoDAO planoDAO = new PlanoDAO();\r\n        AulaColetivaDAO aulaColetivaDAO = new AulaColetivaDAO();\r\n\r\n        //Parâmetros da função escolherOpcao()--\r\n        int opcao = 0;\r\n        int opcaoAluno = 0;\r\n        int opcaoInstrutor = 0;\r\n        int opcaoPlano = 0;\r\n        int opcaoAulas = 0;\r\n        int opcaoInscricoes = 0;\r\n        int opcaoFrequencia = 0;\r\n        int opcaoRelatorios = 0;\r\n\r\n        //Execução do código--\r\n        do {\r\n\r\n            viewMenu.exibirMenuPrincipal();\r\n\r\n            opcao = escolherOpcao(entradaUtil);\r\n\r\n            switch (opcao){\r\n\r\n                //Interação com o menu Aluno--\r\n                case 1:\r\n\r\n                    do {\r\n                        viewMenu.exibirMenuAluno();\r\n                        opcaoAluno = escolherOpcao(entradaUtil);\r\n\r\n                        switch (opcaoAluno){\r\n\r\n                            //Cadastro de Aluno--\r\n                            case 1:\r\n\r\n                                //Verifica se existe um plano para atribuir ao aluno--\r\n                                if (planos.isEmpty()){\r\n                                    System.out.println(\"Nenhum plano cadastrado! Cadastre um plano primeiro.\");\r\n                                    break;\r\n                                }\r\n\r\n                                //Recebe os parâmetros do objeto Aluno--\r\n                                String nomeAluno = entradaUtil.lerTexto(\"Informe o nome do Aluno:\");\r\n\r\n                                String cpfAluno = entradaUtil.lerCpf(\"Informe o CPF do Aluno: \");\r\n\r\n                                LocalDate dataNascimentoAluno = entradaUtil.lerData(\"Digite a data de nascimento (AAAA-MM-DD):\");\r\n\r\n                                String telefoneAluno = entradaUtil.lerTelefone(\"Informe o telefone do Aluno: \");\r\n\r\n                                String emailAluno = entradaUtil.lerEmail(\"Informe o email do Aluno: \");\r\n\r\n                                //Exibe os planos para que um seja atribuído ao aluno--\r\n                                planoService.exibirPlanos(planos);\r\n\r\n                                int planoId = entradaUtil.lerInt(\"Informe o ID do Plano: \");\r\n\r\n                                Plano planoEscolhido = planoService.buscarPlanoPorId(planos, planoId);\r\n\r\n                                if (planoEscolhido == null){\r\n                                    System.out.println(\"Plano não encontrado! Encerrando cadastro.\");\r\n                                    break;\r\n                                }\r\n\r\n                                //Cria o objeto Aluno--\r\n                                Aluno aluno = new Aluno(nomeAluno, cpfAluno, dataNascimentoAluno, telefoneAluno, emailAluno, planoEscolhido);\r\n\r\n                                //Adiciona o objeto no Banco de Dados através do DAO--\r\n                                alunoDAO.cadastrarAluno(aluno);\r\n                                break;\r\n\r\n                            //Exibição de Alunos--\r\n                            case 4:\r\n\r\n                                alunoService.exibirAluno(pessoas);\r\n                                break;\r\n\r\n                        }\r\n\r\n                    } while (opcaoAluno != 0);\r\n                    break;\r\n\r\n                //Interação com o menu Instrutor--\r\n                case 2:\r\n\r\n                    do {\r\n                        viewMenu.exibirMenuInstrutor();\r\n                        opcaoInstrutor = escolherOpcao(entradaUtil);\r\n\r\n                        switch (opcaoInstrutor){\r\n\r\n                            //Cadastro de Instrutor--\r\n                            case 1:\r\n\r\n                                //Recebe os parâmetros do objeto instrutor--\r\n                                String nomeInstrutor = entradaUtil.lerTexto(\"Informe o nome do instrutor\");\r\n\r\n                                String cpfInstrutor = entradaUtil.lerCpf(\"Informe o cpf do intrutor: \");\r\n\r\n                                LocalDate dataNascimentoInstrutor = entradaUtil.lerData(\"Digite a data de nascimento (AAAA-MM-DD):\");\r\n\r\n                                String telefoneInstrutor = entradaUtil.lerTelefone(\"Informe o telefone do instrutor: \");\r\n\r\n                                String emailInstrutor = entradaUtil.lerEmail(\"Informe o Email do instrutor: \");\r\n\r\n                                String especialidade = entradaUtil.lerTexto(\"Informe a especialidade do instrutor: \");\r\n\r\n                                LocalTime horarioAtivo = entradaUtil.lerHorario(\"Digite o horário ativo (HH:MM):\");\r\n\r\n                                BigDecimal salario = entradaUtil.lerBigDecimal(\"Informe o salário do Instrutor: \");\r\n\r\n                                //Cria o objeto Instrutor--\r\n                                Instrutor instrutor = new Instrutor(nomeInstrutor, cpfInstrutor, dataNascimentoInstrutor, telefoneInstrutor, emailInstrutor, especialidade, horarioAtivo, salario\r\n                                );\r\n\r\n                                //Adiciona o objeto no Banco de Dados através do DAO--\r\n                                instrutorDAO.cadastrarInstrutor(instrutor);\r\n                                break;\r\n\r\n                            //Exibição de Instrutores--\r\n                            case 4:\r\n                                instrutorService.exibirInstrutores(pessoas);\r\n                                break;\r\n                        }\r\n\r\n                    } while (opcaoInstrutor != 0);\r\n                    break;\r\n\r\n                //Interação com o menu Planos--\r\n                case 3:\r\n\r\n                    do {\r\n                        viewMenu.exibirMenuPlanos();\r\n                        opcaoPlano = escolherOpcao(entradaUtil);\r\n\r\n                        switch (opcaoPlano){\r\n\r\n                            //Cadastro de Plano--\r\n                            case 1:\r\n\r\n                                //Recebe os parâmetros do objeto plano--\r\n                                int idPlano = entradaUtil.lerInt(\"Informe o ID do plano: \");\r\n\r\n                                String nomePlano = entradaUtil.lerTexto(\"Informe o nome do plano: \");\r\n\r\n                                String descricaoPlano = entradaUtil.lerTexto(\"Informe a descrição do plano: \");\r\n\r\n                                BigDecimal valorMensal = entradaUtil.lerBigDecimal(\"Informe o valor do plano: \");\r\n\r\n                                int duracaoMeses = entradaUtil.lerInt(\"Informe a duração em meses: \");\r\n\r\n                                String beneficios = entradaUtil.lerTexto(\"Informe os benefícios do plano: \");\r\n\r\n                                //Criação do objeto Plano--\r\n                                Plano plano = new Plano (idPlano, nomePlano, descricaoPlano, valorMensal, duracaoMeses, beneficios);\r\n\r\n                                //Adição do plano no Banco de Dados através do metodo DAO--\r\n                                planoDAO.cadastrarPlano(plano);\r\n                                break;\r\n\r\n                            //Exibição dos Planos--\r\n                            case 4:\r\n                                planoService.exibirPlanos(planos);\r\n                                break;\r\n\r\n                        }\r\n\r\n                    } while (opcaoPlano != 0);\r\n                    break;\r\n\r\n                //Interação com o menu Aulas--\r\n                case 4:\r\n\r\n                    do {\r\n                        viewMenu.exibirMenuAulas();\r\n                        opcaoAulas = escolherOpcao(entradaUtil);\r\n\r\n                        switch (opcaoAulas){\r\n\r\n                            //Cadastro de aula--\r\n                            case 1:\r\n\r\n                                //Recebe os parâmetros do objeto Aula--\r\n                                int idAula = entradaUtil.lerInt(\"Informe o id da aula: \");\r\n\r\n                                instrutorService.exibirInstrutores(pessoas);\r\n\r\n                                String escolherInstrutor = entradaUtil.lerCpf(\"Informe o cpf do instrutor que vai dar a aula: \");\r\n\r\n                                Instrutor instrutorAula = (Instrutor) instrutorService.buscarInstrutorPorCpf(pessoas, escolherInstrutor);\r\n\r\n                                if (instrutorAula == null){\r\n                                    System.out.println(\"Instrutor não encontrado. Encerrando cadastro da aula.\");\r\n                                    break;\r\n                                }\r\n\r\n                                String nomeAula = entradaUtil.lerTexto(\"Informe o nome da aula: \");\r\n\r\n                                LocalTime horarioAula = entradaUtil.lerHorario(\"Informe o horário da aula: \");\r\n\r\n                                //Verifica se o horário da aula cadastrada bate com o horário de atividade do instrutor--\r\n                                if (horarioAula.isBefore(instrutorAula.getHorarioAtivo())){\r\n                                    System.out.println(\"O horário de atuação do instrutor não bate com a aula! encerrando cadastro.\");\r\n                                    break;\r\n                                }\r\n\r\n                                int minutosAula = entradaUtil.lerInt(\"Informe a duração em minutos da aula: \");\r\n\r\n                                //Cria o objeto Aula--\r\n                                AulaColetiva aulaColetiva = new AulaColetiva(idAula, instrutorAula, nomeAula, horarioAula, minutosAula);\r\n\r\n                                //Adiciona a aula no Banco de Dados através do DAO--\r\n                                aulaColetivaDAO.cadastrarAulaColetiva(aulaColetiva);\r\n                                break;\r\n\r\n                            case 2:\r\n\r\n                                //Exibe todas as aulas cadastradas--\r\n                                aulaColetivaService.exibirAulaColetiva(aulasColetivas);\r\n\r\n                        }\r\n\r\n                    } while (opcaoAulas != 0);\r\n                    break;\r\n\r\n                //Interação com o menu Inscricoes--\r\n                case 5:\r\n\r\n                    do {\r\n                        viewMenu.exibirMenuInscricoes();\r\n                        opcaoInscricoes = escolherOpcao(entradaUtil);\r\n\r\n                        switch (opcaoInscricoes){\r\n\r\n                        }\r\n\r\n                    } while (opcaoInscricoes != 0);\r\n                    break;\r\n\r\n                //Interação com o menu FrequenciaAlunos--\r\n                case 6:\r\n\r\n                    do {\r\n                        viewMenu.exibirFrequenciaAlunos();\r\n                        opcaoFrequencia = escolherOpcao(entradaUtil);\r\n\r\n                        switch (opcaoFrequencia){\r\n\r\n                        }\r\n\r\n                    } while (opcaoFrequencia != 0);\r\n                    break;\r\n\r\n                //Interação com o menu Relatorios--\r\n                case 7:\r\n\r\n                    do {\r\n                        viewMenu.exibirMenuRelatorios();\r\n                        opcaoRelatorios = escolherOpcao(entradaUtil);\r\n\r\n                        switch (opcaoRelatorios){\r\n\r\n                        }\r\n\r\n                    //Retorna ao Menu Principal--\r\n                    } while (opcaoRelatorios != 0);\r\n                    break;\r\n\r\n            }\r\n\r\n        //Encerra o programa--\r\n        }while (opcao != 0);\r\n\r\n        scanner.close();\r\n\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/SistemaMain/Main.java b/src/SistemaMain/Main.java
+--- a/src/SistemaMain/Main.java	(revision 8a9bf0a6f79af43bb056c37b2856156a40080eda)
++++ b/src/SistemaMain/Main.java	(date 1778205506400)
+@@ -28,9 +28,6 @@
+     //Arraylist que armazena as Pessoas do sistema--
+     private static ArrayList <Pessoa> pessoas = new ArrayList<>();
+ 
+-    //Arraylist que armazena os Planos do sistema--
+-    private static ArrayList <Plano> planos = new ArrayList<>();
+-
+     //Arraylist que armazena as Inscrições do sistema--
+     private static ArrayList <Inscricao> inscricoes = new ArrayList<>();
+ 
+@@ -87,10 +84,7 @@
+                             case 1:
+ 
+                                 //Verifica se existe um plano para atribuir ao aluno--
+-                                if (planos.isEmpty()){
+-                                    System.out.println("Nenhum plano cadastrado! Cadastre um plano primeiro.");
+-                                    break;
+-                                }
++                                planoService.verificarPlanosVazio();
+ 
+                                 //Recebe os parâmetros do objeto Aluno--
+                                 String nomeAluno = entradaUtil.lerTexto("Informe o nome do Aluno:");
+@@ -103,12 +97,12 @@
+ 
+                                 String emailAluno = entradaUtil.lerEmail("Informe o email do Aluno: ");
+ 
+-                                //Exibe os planos para que um seja atribuído ao aluno--
+-                                planoService.exibirPlanos(planos);
++                                //Exibe os planos cadastrados no Banco de Dados para que um seja atribuído ao aluno--
++                                planoService.exibirPlanoBd();
+ 
+                                 int planoId = entradaUtil.lerInt("Informe o ID do Plano: ");
+ 
+-                                Plano planoEscolhido = planoService.buscarPlanoPorId(planos, planoId);
++                                Plano planoEscolhido = planoService.buscarPlanoPorId(planoId);
+ 
+                                 if (planoEscolhido == null){
+                                     System.out.println("Plano não encontrado! Encerrando cadastro.");
+@@ -120,6 +114,7 @@
+ 
+                                 //Adiciona o objeto no Banco de Dados através do DAO--
+                                 alunoDAO.cadastrarAluno(aluno);
++                                pessoas.add(aluno);
+                                 break;
+ 
+                             //Exibição de Alunos--
+@@ -158,7 +153,7 @@
+ 
+                                 String especialidade = entradaUtil.lerTexto("Informe a especialidade do instrutor: ");
+ 
+-                                LocalTime horarioAtivo = entradaUtil.lerHorario("Digite o horário ativo (HH:MM):");
++                                LocalTime horarioAtivo = entradaUtil.lerHorario("Digite o horário ativo ");
+ 
+                                 BigDecimal salario = entradaUtil.lerBigDecimal("Informe o salário do Instrutor: ");
+ 
+@@ -168,11 +163,12 @@
+ 
+                                 //Adiciona o objeto no Banco de Dados através do DAO--
+                                 instrutorDAO.cadastrarInstrutor(instrutor);
++                                pessoas.add(instrutor);
+                                 break;
+ 
+                             //Exibição de Instrutores--
+                             case 4:
+-                                instrutorService.exibirInstrutores(pessoas);
++                                instrutorService.exibirInstrutoresBd();
+                                 break;
+                         }
+ 
+@@ -213,7 +209,7 @@
+ 
+                             //Exibição dos Planos--
+                             case 4:
+-                                planoService.exibirPlanos(planos);
++                                planoService.exibirPlanoBd();
+                                 break;
+ 
+                         }
+@@ -264,6 +260,7 @@
+ 
+                                 //Adiciona a aula no Banco de Dados através do DAO--
+                                 aulaColetivaDAO.cadastrarAulaColetiva(aulaColetiva);
++                                aulasColetivas.add(aulaColetiva);
+                                 break;
+ 
+                             case 2:
+Index: src/DAO/InstrutorDAO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package DAO;\r\n\r\nimport Model.Instrutor;\r\n\r\nimport java.sql.PreparedStatement;\r\nimport java.sql.SQLException;\r\nimport java.sql.Time;\r\n\r\npublic class InstrutorDAO {\r\n\r\n    public void cadastrarInstrutor(Instrutor instrutor) {\r\n\r\n        String sql = \"INSERT INTO instrutor VALUES (?, ?, ?, ?, ?, ?, ?)\";\r\n        PreparedStatement stmt = null;\r\n\r\n        try {\r\n            stmt = ConexaoBD.getConexao().prepareStatement(sql);\r\n            stmt.setString(1, instrutor.getCpf());\r\n            stmt.setString(2, instrutor.getNome());\r\n            stmt.setString(3, instrutor.getTelefone());\r\n            stmt.setString(4, instrutor.getEspecialidade());\r\n            stmt.setTime(5, Time.valueOf(instrutor.getHorarioAtivo()));\r\n            stmt.setBigDecimal(6, instrutor.getSalario());\r\n            stmt.setString(7, instrutor.getEmail());\r\n\r\n            stmt.executeUpdate();\r\n            stmt.close();\r\n            System.out.println(\"Instrutor cadastrado com sucesso!\");\r\n\r\n        } catch (SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n\r\n}
+===================================================================
+diff --git a/src/DAO/InstrutorDAO.java b/src/DAO/InstrutorDAO.java
+--- a/src/DAO/InstrutorDAO.java	(revision 8a9bf0a6f79af43bb056c37b2856156a40080eda)
++++ b/src/DAO/InstrutorDAO.java	(date 1778202660830)
+@@ -2,15 +2,17 @@
+ 
+ import Model.Instrutor;
+ 
++import java.sql.Date;
+ import java.sql.PreparedStatement;
+ import java.sql.SQLException;
+ import java.sql.Time;
++import java.time.LocalDate;
+ 
+ public class InstrutorDAO {
+ 
+     public void cadastrarInstrutor(Instrutor instrutor) {
+ 
+-        String sql = "INSERT INTO instrutor VALUES (?, ?, ?, ?, ?, ?, ?)";
++        String sql = "INSERT INTO instrutor VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+         PreparedStatement stmt = null;
+ 
+         try {
+@@ -22,6 +24,7 @@
+             stmt.setTime(5, Time.valueOf(instrutor.getHorarioAtivo()));
+             stmt.setBigDecimal(6, instrutor.getSalario());
+             stmt.setString(7, instrutor.getEmail());
++            stmt.setDate(8, Date.valueOf(instrutor.getDataNascimento()));
+ 
+             stmt.executeUpdate();
+             stmt.close();
