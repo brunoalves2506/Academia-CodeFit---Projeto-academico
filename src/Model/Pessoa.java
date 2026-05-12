@@ -41,10 +41,17 @@ public abstract class Pessoa {
     //O cpf deve conter exatamente 11 caracteres numéricos--
     //EX: 46667546874;
     public void setCpf(String cpf) {
-        if(cpf == null || !cpf. matches("\\d{11}")) {
+        if (cpf == null) {
             throw new IllegalArgumentException("CPF inválido");
         }
-            this.cpf = cpf.trim();
+
+        cpf = cpf.trim();
+
+        if (!cpf.matches("\\d{11}")) {
+            throw new IllegalArgumentException("CPF inválido");
+        }
+
+        this.cpf = cpf;
 
         }
 

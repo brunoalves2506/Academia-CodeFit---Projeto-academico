@@ -1,6 +1,7 @@
 package Service;
 
 //Imports uteis para o pacote--
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,26 +14,25 @@ import Model.*;
 
 public class AlunoService {
 
-    //Função exibirAluno() que retorna os Alunos armazenados na arraylist pessoas--
-    public void exibirAluno(ArrayList<Pessoa> pessoas){
+    //Verifica se a tabela aluno do Banco de Dados está vazia--
+    public boolean verificarAlunosVazio(){
+        String sql = "SELECT * FROM aluno";
 
-        boolean encontrado = false;
+        try(Statement stmt = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
 
-        for (Pessoa p : pessoas){
-
-            if(p instanceof Aluno){
-
-                System.out.println("=======================================================ALUNO====================================================================\n");
-                System.out.println(p);
-
-                encontrado = true;
+            if (!rs.next()){
+                System.out.println("=======================================================ALUNOS====================================================================\n");
+                System.out.println("Nenhum aluno cadastrado.");
+                System.out.println("=================================================================================================================================\n");
+                return false;
             }
-        }
 
-        if(!encontrado) {
-            System.out.println("=======================================================ALUNO====================================================================\n");
-            System.out.println("Nenhum aluno cadastrado.");
-            System.out.println("================================================================================================================================\n");
+            return true;
+
+        } catch (SQLException e){
+            System.out.println("Erro ao buscar Alunos: " + e.getMessage());
+            return false;
         }
     }
 
@@ -50,13 +50,13 @@ public class AlunoService {
                 return;
             }
 
-            System.out.println("=======================================================ALUNOS====================================================================\n");
+            System.out.println("===================================================================ALUNOS===============================================================================\n");
 
             do {
                 Plano plano = new PlanoService().buscarPlanoPorId(rs.getInt("idplano"));
                 Aluno aluno = new Aluno(
                         rs.getString("cpfaluno"),
-                        rs.getString("nome"),
+                        rs.getString("nomealuno"),
                         rs.getDate("datanascimentoaluno").toLocalDate(),
                         rs.getString("telefonealuno"),
                         rs.getString("emailaluno"),
@@ -71,6 +71,38 @@ public class AlunoService {
             System.out.println("Erro ao buscar Aluno: " + e.getMessage());
         }
 
+    }
+
+    //Busca o Aluno pelo cpf--
+    public Aluno buscarAlunoCpf(String cpfAluno){
+
+        String sql = "SELECT * FROM aluno WHERE cpfaluno = ?";
+
+        try {
+            PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql);
+            stmt.setString(1, cpfAluno);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                Plano plano = new PlanoDAO().buscarPlanoId(rs.getInt("idplano"));
+
+                return new Aluno(
+                        rs.getString("cpfaluno"),
+                        rs.getString("nomealuno"),
+                        rs.getDate("datanascimentoaluno").toLocalDate(),
+                        rs.getString("telefonealuno"),
+                        rs.getString("emailaluno"),
+                        plano
+                );
+            }
+
+            rs.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar Aluno: " + e.getMessage());
+        }
+        return null;
     }
 
 }

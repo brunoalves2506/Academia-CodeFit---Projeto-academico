@@ -3,19 +3,21 @@
 package Model;
 
 //Imports para definir data e horário--
+import Util.Catraca;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 //Classe Instrutor--
-public class Instrutor extends Pessoa{
+public class Instrutor extends Pessoa implements Catraca {
     private String especialidade;
     private LocalTime horarioAtivo;
     private BigDecimal salario;
 
     //Construtor--
     public Instrutor(String cpf, String nome, LocalDate dataNascimento, String telefone, String email, String especialidade, LocalTime horarioAtivo, BigDecimal salario){
-       super(nome, cpf, dataNascimento, telefone, email);
+       super(cpf, nome, dataNascimento, telefone, email);
         setEspecialidade(especialidade);
         setHorarioAtivo(horarioAtivo);
         setSalario(salario);
@@ -56,6 +58,14 @@ public class Instrutor extends Pessoa{
         this.salario = salario;
     }
 
+    //Conceder aumento de salário ao instrutor--
+    public void aumentoSalario(BigDecimal aumento){
+        if (aumento.compareTo(BigDecimal.ZERO) <= 0){
+            throw new IllegalArgumentException("Aumento inválido");
+        }
+        this.salario = this.salario.add(aumento);
+    }
+
     //Sobreposição do método Abstrato toString() da classe pai Pessoa--
     @Override
     public String toString() {
@@ -71,14 +81,17 @@ public class Instrutor extends Pessoa{
                 "=====================================================================================================================================";
     }
 
-    //Conceder aumento de salário ao instrutor--
-        public void aumentoSalario(BigDecimal aumento){
-            if (aumento.compareTo(BigDecimal.ZERO) <= 0){
-                throw new IllegalArgumentException("Aumento inválido");
-            }
-            this.salario = this.salario.add(aumento);
-        }
-
+    //Médotodos das Interfaces--
+    @Override
+    public void passarCatracaEntrada(LocalTime horarioChegada) {
+        System.out.println("Horario de chegada do Instrutor " + this.getNome() + ": " + horarioChegada.toString());
     }
+
+    @Override
+    public void passarCatracaSaida(LocalTime horarioSaida) {
+        System.out.println("Horario de saida do Instrutor " + this.getNome() + ": " + horarioSaida.toString());
+    }
+
+}
 
 

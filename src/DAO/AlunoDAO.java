@@ -17,17 +17,35 @@ public class AlunoDAO {
             stmt = ConexaoBD.getConexao().prepareStatement(sql);
 
             stmt.setString(1, aluno.getCpf());
-            stmt.setString(3, aluno.getNome());
-            stmt.setDate(4, Date.valueOf(aluno.getDataNascimento()));
-            stmt.setString(5, aluno.getTelefone());
-            stmt.setString(6, aluno.getEmail());
-            stmt.setInt(2, aluno.getPlano().getIdPlano());
+            stmt.setString(2, aluno.getNome());
+            stmt.setDate(3, Date.valueOf(aluno.getDataNascimento()));
+            stmt.setString(4, aluno.getTelefone());
+            stmt.setString(5, aluno.getEmail());
+            stmt.setInt(6, aluno.getPlano().getIdPlano());
 
             stmt.executeUpdate();
+            System.out.println("Aluno cadastrado com sucesso.");
             stmt.close();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    //Exclui o Aluno do banco de dados--
+    public void excluirAluno(String cpfaluno){
+
+        String sql = "DELETE FROM aluno WHERE cpfaluno = ?";
+
+        try ( PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+
+            stmt.setString(1, cpfaluno);
+            stmt.executeUpdate();
+            System.out.println("Aluno excluido com sucesso.");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao Excluir Aluno: " + e.getMessage());
         }
 
     }

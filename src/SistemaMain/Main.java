@@ -25,15 +25,6 @@ public class Main{
         return entradaUtil.lerInt("Informe a ação a ser tomada: ");
     }
 
-    //Arraylist que armazena as Pessoas do sistema--
-    private static ArrayList <Pessoa> pessoas = new ArrayList<>();
-
-    //Arraylist que armazena as Inscrições do sistema--
-    private static ArrayList <Inscricao> inscricoes = new ArrayList<>();
-
-    //Arraylist que armazena as Aulas Coletivas do sistema--
-    private static ArrayList <AulaColetiva> aulasColetivas = new ArrayList<>();
-
     //Criação do scanner--
     private static Scanner scanner = new Scanner(System.in);
 
@@ -76,6 +67,8 @@ public class Main{
                         viewMenu.exibirMenuAluno();
                         opcaoAluno = escolherOpcao(entradaUtil);
 
+                        Aluno aluno = null;
+
                         switch (opcaoAluno){
 
                             //Cadastro de Aluno--
@@ -110,27 +103,83 @@ public class Main{
                                 }
 
                                 //Cria o objeto Aluno--
-                                Aluno aluno = new Aluno(cpfAluno, nomeAluno, dataNascimentoAluno, telefoneAluno, emailAluno, planoEscolhido);
+                                aluno = new Aluno(cpfAluno, nomeAluno, dataNascimentoAluno, telefoneAluno, emailAluno, planoEscolhido);
 
                                 //Adiciona o objeto Aluno no banco de dados--
                                 alunoDAO.cadastrarAluno(aluno);
-                                pessoas.add(aluno);
-                                System.out.println("Aluno cadastrado com sucesso!");
                                 break;
 
                             //Edita o aluno desejado--
                             case 2:
-                                String cpfAlunoEscolhido = entradaUtil.lerCpf("Informe o CPF do Aluno que quer alterar: ");
-                                for (Pessoa pessoa : pessoas) {
-                                    if(pessoa.getCpf().equals(cpfAlunoEscolhido)){
 
-                                    }
+                            //Exclui o aluno desejado--
+                            case 3:
+                                if(!alunoService.verificarAlunosVazio()){
+                                    break;
                                 }
+
+                                alunoService.exibirAlunosBd();
+                                cpfAluno = entradaUtil.lerCpf("Informe o CPF do Aluno que deseja excluir: ");
+
+                                aluno = alunoService.buscarAlunoCpf(cpfAluno);
+                                System.out.println(aluno);
+
+                                while (true){
+                                    String acao = entradaUtil.lerTexto("Confirmar exclusão de aluno? (S/N): ").toLowerCase();
+                                    if (acao.equals("n")){
+                                        System.out.println("Exclusão cancelada com sucesso.");
+                                        break;
+
+                                    }else if (acao.equals("s")){
+                                        alunoDAO.excluirAluno(cpfAluno);
+                                        break;
+
+                                    }else{
+                                        System.out.println("Informe uma ação válida.");
+                                    }
+
+                                }
+
+                                break;
 
                             //Exibição de Alunos--
                             case 4:
 
                                 alunoService.exibirAlunosBd();
+                                break;
+
+                            //Registra a chegada do Aluno--
+                            case 5:
+
+                                alunoService.exibirAlunosBd();
+                                
+                                String cpfbusca = entradaUtil.lerCpf("Informe o cpf do Aluno: ");
+                                aluno = alunoService.buscarAlunoCpf(cpfbusca);
+
+                                if (aluno == null) {
+                                    System.out.println("Aluno não encontrado.");
+                                    break;
+                                }
+
+                                LocalTime horarioChegada = entradaUtil.lerHorario("Informe o horário de chegada: ");
+                                aluno.passarCatracaEntrada(horarioChegada);
+                                break;
+
+                            //Registra a saída do Aluno--
+                            case 6:
+
+                                alunoService.exibirAlunosBd();
+
+                                String cpfbuscar = entradaUtil.lerCpf("Informe o cpf do Aluno: ");
+                                aluno = alunoService.buscarAlunoCpf(cpfbuscar);
+
+                                if (aluno == null) {
+                                    System.out.println("Aluno não encontrado.");
+                                    break;
+                                }
+
+                                LocalTime horarioSaida = entradaUtil.lerHorario("Informe o horário de saída: ");
+                                aluno.passarCatracaSaida(horarioSaida);
                                 break;
 
                         }
@@ -175,6 +224,37 @@ public class Main{
                                 instrutorDAO.cadastrarInstrutor(instrutor);
                                 break;
 
+                            //Exclui o Instrutor do banco de dados--
+                            case 3:
+
+                                if(!instrutorService.verificarInstrutoresVazio()){
+                                    break;
+                                }
+
+                                instrutorService.exibirInstrutoresBd();
+                                cpfInstrutor = entradaUtil.lerCpf("Informe o CPF do Instrutor que deseja excluir: ");
+
+                                instrutor = instrutorService.buscarProfessorCpf(cpfInstrutor);
+                                System.out.println(instrutor);
+
+                                while (true){
+                                    String acao = entradaUtil.lerTexto("Confirmar exclusão de Instrutor? (S/N): ").toLowerCase();
+                                    if (acao.equals("n")){
+                                        System.out.println("Exclusão cancelada com sucesso.");
+                                        break;
+
+                                    }else if (acao.equals("s")){
+                                        instrutorDAO.excluirInstrutor(cpfInstrutor);
+                                        break;
+
+                                    }else{
+                                        System.out.println("Informe uma ação válida.");
+                                    }
+
+                                }
+
+                                break;
+
                             //Exibição de Instrutores--
                             case 4:
                                 instrutorService.exibirInstrutoresBd();
@@ -214,6 +294,36 @@ public class Main{
 
                                 //Adição do plano no Banco de dados--
                                 planoDAO.cadastrarPlano(plano);
+                                break;
+
+                            //Exclui o plano do banco de dados--
+                            case 3:
+                                if(!planoService.verificarPlanosVazio()){
+                                    break;
+                                }
+
+                                planoService.exibirPlanoBd();
+                                idPlano = entradaUtil.lerInt("Informe o ID do Plano que deseja excluir: ");
+
+                                plano = planoService.buscarPlanoPorId(idPlano);
+                                System.out.println(plano);
+
+                                while (true){
+                                    String acao = entradaUtil.lerTexto("Confirmar exclusão do Plano? (S/N): ").toLowerCase();
+                                    if (acao.equals("n")){
+                                        System.out.println("Exclusão cancelada com sucesso.");
+                                        break;
+
+                                    }else if (acao.equals("s")){
+                                        planoDAO.excluirPlano(idPlano);
+                                        break;
+
+                                    }else{
+                                        System.out.println("Informe uma ação válida.");
+                                    }
+
+                                }
+
                                 break;
 
                             //Exibição dos Planos--
@@ -258,6 +368,10 @@ public class Main{
                                 //Cadastra a aula coletiva no Banco de Dados--
                                 aulaColetivaDAO.cadastrarAulaColetiva(aulaColetiva);
                                 break;
+
+                            //Exclui a Aula Coletiva do banco de dados--
+                            case 3:
+
 
                             //Exibe as aulas coletivas cadastradas no Banco de Dados--
                             case 4:
