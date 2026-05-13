@@ -78,6 +78,7 @@ public class ViewMenu {
         System.out.println("==========MENU DE INSCRIÇÕES==========");
         System.out.println("1. INSCREVER ALUNO EM AULA");
         System.out.println("2. CANCELAR INSCRIÇÃO DE ALUNO EM AULA");
+        System.out.println("3. EXIBIR INSCRIÇÕES");
         System.out.println("0. VOLTAR AO MENU PRINCIPAL");
         System.out.println("======================================");
     }

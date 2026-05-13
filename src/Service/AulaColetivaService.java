@@ -8,45 +8,30 @@ import Model.Instrutor;
 import java.sql.PreparedStatement;  // ← import atualizado
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class AulaColetivaService {
 
-    public void exibirAulasColetivasBD() {
-
+    //Verifica se a tabela aulacoletiva do Banco de Dados está vazia--
+    public boolean verificarAulaColetivaVazia(){
         String sql = "SELECT * FROM aulacoletiva";
 
-        try (
-                PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql);  // ← tipo corrigido
-                ResultSet rs = stmt.executeQuery()
-        ) {
+        try(Statement stmt = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
 
-            if (!rs.next()) {
-                System.out.println("==================================================AULAS COLETIVAS================================================================\n");
-                System.out.println("Nenhuma aula coletiva cadastrada.");
+            if (!rs.next()){
+                System.out.println("=======================================================AULAS COLETIVAS====================================================================\n");
+                System.out.println("Nenhuma aula cadastrada.");
                 System.out.println("=================================================================================================================================\n");
-                return;
+                return false;
             }
 
-            InstrutorDAO instrutorDAO = new InstrutorDAO();
+            return true;
 
-            do {
-                String cpf = rs.getString("cpfinstrutor");
-                Instrutor instrutor = instrutorDAO.buscarProfessorCpf(cpf);
-
-                AulaColetiva aulaColetiva = new AulaColetiva(
-                        rs.getInt("idaula"),
-                        instrutor,
-                        rs.getString("nomeaula"),
-                        rs.getTime("horarioaula").toLocalTime(),
-                        rs.getInt("duracaoaula")
-                );
-
-                System.out.println(aulaColetiva);
-
-            } while (rs.next());
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao buscar aulas coletivas: " + e.getMessage());
+        } catch (SQLException e){
+            System.out.println("Erro ao buscar Aulas: " + e.getMessage());
+            return false;
         }
     }
+
 }

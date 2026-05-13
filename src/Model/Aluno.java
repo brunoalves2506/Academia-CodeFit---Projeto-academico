@@ -25,12 +25,6 @@ public class Aluno extends Pessoa implements Catraca, Ajuda {
         this.plano = plano;
     }
 
-    //Construtor caso o aluno não possua telefone e email--
-    //OBS: precisa ser adicionado o plano, não adicionei por enquanto.
-    public Aluno(String cpf, String nome, LocalDate dataNascimento, Plano plano){
-        this(cpf, nome, dataNascimento, "Não cadastrado.", "Não cadastrado.", plano);
-    }
-
     //Getter do plano a ser cadastrado do Aluno--
     public Plano getPlano() {
         return plano;

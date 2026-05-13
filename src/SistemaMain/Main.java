@@ -36,6 +36,7 @@ public class Main{
         ViewMenu viewMenu = new ViewMenu();
         AlunoDAO alunoDAO = new AlunoDAO();
         PlanoDAO planoDAO = new PlanoDAO();
+        InscricaoDAO inscricaoDAO = new InscricaoDAO();
         AulaColetivaDAO aulaColetivaDAO = new AulaColetivaDAO();
         InstrutorDAO instrutorDAO = new InstrutorDAO();
 
@@ -421,6 +422,8 @@ public class Main{
                         viewMenu.exibirMenuAulas();
                         opcaoAulas = escolherOpcao(entradaUtil);
 
+                        AulaColetiva aulaColetiva = null;
+
                         switch (opcaoAulas){
 
                             //Cadastro de Aula--
@@ -441,18 +444,76 @@ public class Main{
                                 LocalTime horarioAula = entradaUtil.lerHorario("Digite o horario da Aula: ");
                                 int duracaoMinutosAula = entradaUtil.lerInt("Informe a duração em minutos da Aula: ");
 
-                                AulaColetiva aulaColetiva = new AulaColetiva(idAula, instrutorEscolhido, nomeAula, horarioAula, duracaoMinutosAula);
+                                aulaColetiva = new AulaColetiva(idAula, instrutorEscolhido, nomeAula, horarioAula, duracaoMinutosAula);
                                 aulaColetivaDAO.cadastrarAulaColetiva(aulaColetiva);
+                                break;
+
+                            //Edita a aula coletiva selecionada--
+                            case 2:
+
+                                if(!aulaColetivaService.verificarAulaColetivaVazia()){
+                                    System.out.println("Nenhuma Aula cadastrada.");
+                                    break;
+                                }
+
+                                aulaColetivaDAO.exibirAulasColetivasBD();
+                                idAula = entradaUtil.lerInt("Informe o ID do Aula que deseja alterar: ");
+                                aulaColetiva = aulaColetivaDAO.buscarAulaColetivaPorId(idAula);
+
+                                System.out.println(aulaColetiva);
+
+                                //Exibe os instrutores presentes no banco de dados para fazer o cadastro na aula--
+                                instrutorDAO.exibirInstrutoresBd();
+                                //Busca o instrutor pelo cpf--
+                                String cpfNovoInstrutor = entradaUtil.lerCpf("Informe o CPF do instrutor que vai ministrar a aula: ");
+                                instrutorEscolhido = instrutorDAO.buscarProfessorCpf(cpfNovoInstrutor);
+
+                                String novoNomeAula = entradaUtil.lerTexto("Informe o nome da Aula: ");
+                                LocalTime novoHorarioAula = entradaUtil.lerHorario("Digite o horario da Aula: ");
+                                int novaDuracaoMinutosAula = entradaUtil.lerInt("Informe a duração em minutos da Aula: ");
+
+                                aulaColetivaDAO.editarAulaColetiva(novoNomeAula, instrutorEscolhido, aulaColetiva.getCapacidadeMax(), novoHorarioAula, novaDuracaoMinutosAula, aulaColetiva);
                                 break;
 
                             //Exclui a Aula Coletiva do banco de dados--
                             case 3:
 
+                                if (!aulaColetivaService.verificarAulaColetivaVazia()){
+                                    break;
+                                }
+
+                                aulaColetivaDAO.exibirAulasColetivasBD();
+                                idAula = entradaUtil.lerInt("Informe o ID da Aula que deseja excluir: ");
+
+                                aulaColetiva = aulaColetivaDAO.buscarAulaColetivaPorId(idAula);
+
+                                if (aulaColetiva == null){
+                                    System.out.println("Aula não encontrada!");
+                                    break;
+                                }
+
+                                System.out.println(aulaColetiva);
+
+                                while (true){
+                                    String acao = entradaUtil.lerTexto("Confirmar exclusão da Aula Coletiva? (S/N): ").toLowerCase();
+                                    if (acao.equals("n")){
+                                        System.out.println("Exclusão cancelada com sucesso.");
+                                        break;
+
+                                    }else if (acao.equals("s")){
+                                        aulaColetivaDAO.excluirAulaColetiva(idAula); // <- int, não o objeto
+                                        break;
+
+                                    }else{
+                                        System.out.println("Informe uma ação válida.");
+                                    }
+                                }
+                                break;
 
                             //Exibe as aulas coletivas cadastradas no Banco de Dados--
                             case 4:
 
-                                aulaColetivaService.exibirAulasColetivasBD();
+                                aulaColetivaDAO.exibirAulasColetivasBD();
                                 break;
 
                         }
@@ -467,7 +528,38 @@ public class Main{
                         viewMenu.exibirMenuInscricoes();
                         opcaoInscricoes = escolherOpcao(entradaUtil);
 
+                        Inscricao inscricao = null;
+
                         switch (opcaoInscricoes){
+
+                            //Cadastra uma inscrição no banco de dados--
+                            case 1:
+
+                                int idInscricao = entradaUtil.lerInt("Informe o id da inscrição: ");
+
+                                alunoDAO.exibirAlunosBd();
+                                String cpfAluno = entradaUtil.lerCpf("Informe o cpf do aluno: ");
+                                Aluno aluno = alunoDAO.buscarAlunoCpf(cpfAluno);
+
+                                aulaColetivaDAO.exibirAulasColetivasBD();
+                                int idAula = entradaUtil.lerInt("Informe o id da aula coletiva: ");
+                                AulaColetiva aulaColetiva = aulaColetivaDAO.buscarAulaColetivaPorId(idAula);
+
+                                LocalDate dataInscricao = entradaUtil.lerData("informe a data de inscrição: ");
+
+                                String statusInscricao = "ativo";
+
+                                inscricao = new Inscricao(idInscricao, aluno, aulaColetiva, dataInscricao, statusInscricao);
+
+                                inscricaoDAO.cadastrarInscricao(inscricao);
+
+                                break;
+
+                            //Exibe as inscrições cadastradas no banco de dados--
+                            case 3:
+
+                               inscricaoDAO.exibirInscricoesBd();
+                               break;
 
                         }
 

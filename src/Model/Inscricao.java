@@ -78,4 +78,16 @@ public class Inscricao {
         }
     }
 
+    @Override
+    public String toString() {
+        return "========================================================================================================================================================\n" +
+                "ID Inscrição: " + getIdInscricao() +
+                " | Aluno: " + getAluno().getNome() +
+                " | CPF: " + getAluno().getCpf() +
+                " | Aula: " + getAulaColetiva().getNomeAula() +
+                " | Data de Inscrição: " + getDataInscicao() +
+                " | Status: " + getStatusInscricao() + "\n" +
+                "========================================================================================================================================================";
+    }
+
 }
