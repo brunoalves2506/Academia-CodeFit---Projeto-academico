@@ -6,16 +6,16 @@ import java.time.LocalDate;
 
 //Classe pessoa--
 public abstract class Pessoa {
-    private String nome;
     private String cpf;
+    private String nome;
     private LocalDate dataNascimento;
     private String telefone;
     private String email;
 
     //Construtor--
-    public Pessoa(String nome, String cpf, LocalDate dataNascimento, String telefone, String email){
-        setNome(nome);
+    public Pessoa(String cpf, String nome, LocalDate dataNascimento, String telefone, String email){
         setCpf(cpf);
+        setNome(nome);
         setDataNascimento(dataNascimento);
         setTelefone(telefone);
         setEmail(email);
@@ -41,10 +41,17 @@ public abstract class Pessoa {
     //O cpf deve conter exatamente 11 caracteres numéricos--
     //EX: 46667546874;
     public void setCpf(String cpf) {
-        if(cpf == null || !cpf. matches("\\d{11}")) {
+        if (cpf == null) {
             throw new IllegalArgumentException("CPF inválido");
         }
-            this.cpf = cpf.trim();
+
+        cpf = cpf.trim();
+
+        if (!cpf.matches("\\d{11}")) {
+            throw new IllegalArgumentException("CPF inválido");
+        }
+
+        this.cpf = cpf;
 
         }
 

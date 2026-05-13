@@ -1,34 +1,37 @@
 package Service;
 
 //Imports uteis para o pacote--
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 //Import dos Pacotes--
+import DAO.ConexaoBD;
 import Model.*;
 
 public class InstrutorService {
 
-    //Função exibirInstrutores() que retorna os instrutores armazenados na arraylist pessoas--
-    public void exibirInstrutores(ArrayList<Pessoa> pessoas){
+    //Verifica se a tabela instrutor do Banco de Dados está vazia--
+    public boolean verificarInstrutoresVazio(){
+        String sql = "SELECT * FROM instrutor";
 
-        boolean encontrado = false;
+        try(Statement stmt = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
 
-        for (Pessoa p : pessoas){
-
-            if(p instanceof Instrutor){
-
-                System.out.println("=======================================================INSTRUTOR====================================================================\n");
-                System.out.println(p);
-
-                encontrado = true;
-
+            if (!rs.next()){
+                System.out.println("=======================================================INSTRUTORES====================================================================\n");
+                System.out.println("Nenhum instrutor cadastrado.");
+                System.out.println("=================================================================================================================================\n");
+                return false;
             }
-        }
 
-        if(!encontrado) {
-            System.out.println("=======================================================INSTRUTOR====================================================================\n");
-            System.out.println("Nenhum instrutor cadastrado.");
-            System.out.println("================================================================================================================================\n");
+            return true;
+
+        } catch (SQLException e){
+            System.out.println("Erro ao buscar Instrutores: " + e.getMessage());
+            return false;
         }
     }
 

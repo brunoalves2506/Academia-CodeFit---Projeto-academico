@@ -1,33 +1,37 @@
 package Service;
 
 //Imports uteis para o pacote--
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 //Import dos Pacotes--
+import DAO.ConexaoBD;
 import Model.*;
 
 public class AlunoService {
 
-    //Função exibirAluno() que retorna os Alunos armazenados na arraylist pessoas--
-    public void exibirAluno(ArrayList<Pessoa> pessoas){
+    //Verifica se a tabela aluno do Banco de Dados está vazia--
+    public boolean verificarAlunosVazio(){
+        String sql = "SELECT * FROM aluno";
 
-        boolean encontrado = false;
+        try(Statement stmt = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
 
-        for (Pessoa p : pessoas){
-
-            if(p instanceof Aluno){
-
-                System.out.println("=======================================================ALUNO====================================================================\n");
-                System.out.println(p);
-
-                encontrado = true;
+            if (!rs.next()){
+                System.out.println("=======================================================ALUNOS====================================================================\n");
+                System.out.println("Nenhum aluno cadastrado.");
+                System.out.println("=================================================================================================================================\n");
+                return false;
             }
-        }
 
-        if(!encontrado) {
-            System.out.println("=======================================================ALUNO====================================================================\n");
-            System.out.println("Nenhum aluno cadastrado.");
-            System.out.println("================================================================================================================================\n");
+            return true;
+
+        } catch (SQLException e){
+            System.out.println("Erro ao buscar Alunos: " + e.getMessage());
+            return false;
         }
     }
 

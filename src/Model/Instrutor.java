@@ -3,18 +3,21 @@
 package Model;
 
 //Imports para definir data e horário--
+import Util.Catraca;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 //Classe Instrutor--
-public class Instrutor extends Pessoa{
+public class Instrutor extends Pessoa implements Catraca {
     private String especialidade;
     private LocalTime horarioAtivo;
-    private double salario;
+    private BigDecimal salario;
 
     //Construtor--
-    public Instrutor(String nome, String cpf, LocalDate dataNascimento, String telefone, String email, String especialidade, LocalTime horarioAtivo, double salario){
-       super(nome, cpf, dataNascimento, telefone, email);
+    public Instrutor(String cpf, String nome, LocalDate dataNascimento, String telefone, String email, String especialidade, LocalTime horarioAtivo, BigDecimal salario){
+       super(cpf, nome, dataNascimento, telefone, email);
         setEspecialidade(especialidade);
         setHorarioAtivo(horarioAtivo);
         setSalario(salario);
@@ -43,12 +46,12 @@ public class Instrutor extends Pessoa{
         this.horarioAtivo = horarioAtivo;
     }
 
-    public double getSalario() {
+    public BigDecimal getSalario() {
         return salario;
     }
 
-    public void setSalario(double salario) {
-        if(salario < 2900) {
+    public void setSalario(BigDecimal salario) {
+        if(salario.compareTo(new BigDecimal(2900)) < 0) {
             throw new IllegalArgumentException("Salário abaixo do piso");
         }
 
@@ -59,7 +62,7 @@ public class Instrutor extends Pessoa{
     @Override
     public String toString() {
         return "=====================================================================================================================================\n" +
-                "Nome. " + getNome() +
+                "\uD83D\uDCDD Nome. " + getNome() +
                 " | CPF. " + getCpf() +
                 " | Especialidade. " + getEspecialidade() +
                 " | Horário ativo. " + getHorarioAtivo() +
@@ -70,14 +73,17 @@ public class Instrutor extends Pessoa{
                 "=====================================================================================================================================";
     }
 
-    //Conceder aumento de salário ao instrutor--
-        public void aumentoSalario(double aumento){
-            if (aumento <= 0){
-                throw new IllegalArgumentException("Aumento inválido");
-            }
-            this.salario += aumento;
-        }
-
+    //Médotodos das Interfaces--
+    @Override
+    public void passarCatracaEntrada(LocalTime horarioChegada) {
+        System.out.println("Horario de chegada do Instrutor " + this.getNome() + ": " + horarioChegada.toString());
     }
+
+    @Override
+    public void passarCatracaSaida(LocalTime horarioSaida) {
+        System.out.println("Horario de saida do Instrutor " + this.getNome() + ": " + horarioSaida.toString());
+    }
+
+}
 
 

@@ -20,11 +20,22 @@ public class ViewMenu {
     public void exibirMenuAluno(){
         System.out.println("============MENU DO ALUNO============");
         System.out.println("1. CADASTRAR ALUNO");
-        System.out.println("2. ATUALIZAR ALUNO");
+        System.out.println("2. MENU DE EDIÇÃO DE ALUNO");
         System.out.println("3. EXCLUIR ALUNO");
         System.out.println("4. VISUALIZAR ALUNOS");
+        System.out.println("5. REGISTRAR CHEGADA");
+        System.out.println("6. REGISTRAR SAÍDA");
         System.out.println("0. VOLTAR AO MENU PRINCIPAL");
         System.out.println("=====================================");
+    }
+
+    //Interface de interação do Menu de edição de Aluno--
+    public void exibirMenuEdicaoAluno(){
+        System.out.println("============MENU DE EDIÇÃO DE ALUNO============");
+        System.out.println("1. EDITAR INFORMAÇÕES PESSOAIS DO ALUNO");
+        System.out.println("2. EDITAR PLANO DO ALUNO");
+        System.out.println("0. VOLTAR AO MENU DO ALUNO");
+        System.out.println("===============================================");
     }
 
     //Interface de interação do Menu de Instrutor--
@@ -34,6 +45,8 @@ public class ViewMenu {
         System.out.println("2. ATUALIZAR INSTRUTOR");
         System.out.println("3. EXCLUIR INSTRUTOR");
         System.out.println("4. VISUALIZAR INSTRUTORES");
+        System.out.println("5. REGISTRAR CHEGADA");
+        System.out.println("6. REGISTRAR SAÍDA");
         System.out.println("0. VOLTAR AO MENU PRINCIPAL");
         System.out.println("=====================================");
     }
@@ -55,6 +68,7 @@ public class ViewMenu {
         System.out.println("1. CADASTRAR AULA");
         System.out.println("2. ATUALIZAR AULA");
         System.out.println("3. EXCLUIR AULA");
+        System.out.println("4. EXIBIR AULAS");
         System.out.println("0. VOLTAR AO MENU PRINCIPAL");
         System.out.println("======================================");
     }
