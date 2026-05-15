@@ -21,6 +21,11 @@ O sistema tem como objetivo gerenciar as principais operações de uma academia,
 
 ---
 
+## 🎥 Vídeo Demonstrativo
+
+[![Assista ao vídeo demonstrativo](https://img.youtube.com/vi/MVyHKDvE1Q8/0.jpg)](https://www.youtube.com/watch?v=MVyHKDvE1Q8)
+
+---
 
 ## 📦 Funcionalidades Principais
 
@@ -34,7 +39,13 @@ O sistema tem como objetivo gerenciar as principais operações de uma academia,
 
 ---
 
-## 🏗️ Estrutura de Classes (Planejada)
+## 🗄️ Banco de Dados
+
+O sistema utiliza **PostgreSQL** como banco de dados relacional para persistência das informações.
+
+---
+
+## 🏗️ Estrutura de Classes
 
 - **Aluno:** Armazena dados do aluno (CPF, nome, data de nascimento, contato)
 - **Instrutor:** Representa os instrutores da academia
@@ -59,3 +70,7 @@ Além disso, o sistema pode validar regras como:
 Essas regras garantem a consistência dos dados e o correto funcionamento do sistema.
 
 ---
+
+## 🔗 Repositório
+
+[github.com/brunoalves2506/Academia-CodeFit---Projeto-academico](https://github.com/brunoalves2506/Academia-CodeFit---Projeto-academico/tree/Entrega-CP4---Final)
