@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 
 //Classe Aluno--
@@ -85,7 +86,7 @@ public class Aluno extends Pessoa implements Catraca, Ajuda {
 
     //Métodos da Interface Catraca--
     @Override
-    public void passarCatracaEntrada(LocalTime horarioChegada) {
+    public void passarCatracaEntrada(LocalTime horarioChegada, ArrayList<Frequencia> frequencias) {
         System.out.println("Horario de entrada do aluno " + this.getNome() + ": " + horarioChegada);
     }
 

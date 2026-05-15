@@ -3,6 +3,7 @@ package DAO;
 import Model.Aluno;
 import Model.AulaColetiva;
 import Model.Inscricao;
+import Model.Plano;
 
 import java.sql.*;
 
@@ -29,6 +30,23 @@ public class InscricaoDAO {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    //Exclui a inscrição selecionada--
+    public void excluirInscricao(int idInscricao) {
+
+        String sql = "DELETE FROM inscricao WHERE idinscricao = ?";
+
+        try ( PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+
+            stmt.setInt(1, idInscricao);
+            stmt.executeUpdate();
+            System.out.println("Inscrição de aluno excluida com sucesso.");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao Excluir Inscrição de aluno: " + e.getMessage());
         }
 
     }
@@ -70,6 +88,53 @@ public class InscricaoDAO {
             System.out.println("Erro ao buscar Inscrições: " + e.getMessage());
         }
 
+    }
+
+    public Inscricao buscarInscricaoID(int idInscricao) {
+        String sql = "SELECT * FROM inscricao WHERE idinscricao = ?";
+
+        try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idInscricao);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Busca os objetos completos usando os IDs do ResultSet
+                    Aluno aluno = new AlunoDAO().buscarAlunoCpf(rs.getString("cpfaluno"));
+                    AulaColetiva aulaColetiva = new AulaColetivaDAO().buscarAulaColetivaPorId(rs.getInt("idaula"));
+
+                    return new Inscricao(
+                            rs.getInt("idinscricao"),
+                            aluno,
+                            aulaColetiva,
+                            rs.getDate("datainscricao").toLocalDate(),
+                            rs.getString("statusinscricao")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar inscrição: " + e.getMessage());
+        }
+        return null;
+    }
+
+    //Conta quantos alunos estão cadastrados na Aula Coletiva--
+    public int contarInscricoesPorAula(int idAula) {
+        String sql = "SELECT COUNT(*) FROM inscricao WHERE idaula = ? AND statusinscricao = 'ativo'";
+
+        try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+            stmt.setInt(1, idAula);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao contar inscrições: " + e.getMessage());
+        }
+        return 0;
     }
 
 }

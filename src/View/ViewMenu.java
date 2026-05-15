@@ -86,12 +86,16 @@ public class ViewMenu {
     //Exibição de Estatísticas de frequência--
     public void exibirFrequenciaAlunos(){
         System.out.println("=========FREQUENCIA DE ALUNOS=========");
+        System.out.println("1. EXIBIR FREQUENCIA");
+        System.out.println("0. VOLTAR AO MENU PRINCIPAL");
         System.out.println("======================================");
     }
 
     //Interface de interação do Menu de Relatórios--
     public void exibirMenuRelatorios(){
         System.out.println("========RELATÓRIOS DO SISTEMA========");
+        System.out.println("1. OCUPAÇÃO DE AULAS");
+        System.out.println("0. VOLTAR AO MENU PRINCIPAL");
         System.out.println("=====================================");
     }
 

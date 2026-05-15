@@ -161,4 +161,47 @@ public class AlunoDAO {
         return null;
     }
 
+    //Função que verifica se o aluno pode se inscrever em aulas coletivas--
+    public boolean verificarPlanoAluno(String cpfAluno){
+
+        String sql = "SELECT idplano FROM aluno WHERE cpfaluno = ?";
+
+        try (
+                PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)
+        ) {
+
+            stmt.setString(1, cpfAluno);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (!rs.next()) {
+
+                    System.out.println("Aluno não encontrado.");
+                    return false;
+                }
+
+                int idPlano = rs.getInt("idplano");
+
+                // Plano PRO
+                if (idPlano == 222) {
+
+                    return true;
+
+                } else {
+
+                    System.out.println("Seu plano não permite acesso às aulas coletivas.");
+                    return false;
+                }
+
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Erro ao verificar plano: " + e.getMessage());
+            return false;
+
+        }
+
+    }
+
 }

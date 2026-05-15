@@ -8,6 +8,7 @@ import Util.Catraca;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 //Classe Instrutor--
 public class Instrutor extends Pessoa implements Catraca {
@@ -61,7 +62,7 @@ public class Instrutor extends Pessoa implements Catraca {
     //Sobreposição do método Abstrato toString() da classe pai Pessoa--
     @Override
     public String toString() {
-        return "=====================================================================================================================================\n" +
+        return "=========================================================================================================================================================================================================================\n" +
                 "\uD83D\uDCDD Nome. " + getNome() +
                 " | CPF. " + getCpf() +
                 " | Especialidade. " + getEspecialidade() +
@@ -69,13 +70,12 @@ public class Instrutor extends Pessoa implements Catraca {
                 " | Data de nascimento. " + getDataNascimento() +
                 " | Telefone. " + tratamentoDeSaida(getTelefone()) +
                 " | Email. " + tratamentoDeSaida(getEmail()) +
-                " | Salário. R$" + getSalario() + "\n" +
-                "=====================================================================================================================================";
+                " | Salário. R$" + getSalario();
     }
 
     //Médotodos das Interfaces--
     @Override
-    public void passarCatracaEntrada(LocalTime horarioChegada) {
+    public void passarCatracaEntrada(LocalTime horarioChegada, ArrayList<Frequencia> frequencias) {
         System.out.println("Horario de chegada do Instrutor " + this.getNome() + ": " + horarioChegada.toString());
     }
 

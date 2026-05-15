@@ -65,9 +65,15 @@ public class AulaColetivaDAO {
     //Exclui a Aula Coletiva do banco de dados--
     public void excluirAulaColetiva(int idAula) {
 
+        String sqlInscricao = "DELETE FROM inscricao WHERE idaula = ?";
         String sql = "DELETE FROM aulacoletiva WHERE idAula = ?";
 
-        try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+        try (
+                PreparedStatement stmtInscricao = ConexaoBD.getConexao().prepareStatement(sqlInscricao);
+                PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+
+            stmtInscricao.setInt(1, idAula);
+            stmtInscricao.executeUpdate();
 
             stmt.setInt(1, idAula);
             stmt.executeUpdate();
@@ -85,7 +91,7 @@ public class AulaColetivaDAO {
         String sql = "SELECT * FROM aulacoletiva";
 
         try (
-                PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql);  // ← tipo corrigido
+                PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()
         ) {
 
@@ -147,6 +153,48 @@ public class AulaColetivaDAO {
         }
         return null;
 
+    }
+
+    //Função que visualiza a ocupação de aulas coletivas--
+    public void visualizarOcupacaoAulas(int idAula){
+
+        String sql = """
+        SELECT ac.nomeaula, a.nomealuno, a.cpfaluno, i.datainscricao
+        FROM inscricao i
+        INNER JOIN aluno a ON i.cpfaluno = a.cpfaluno
+        INNER JOIN aulacoletiva ac ON i.idaula = ac.idaula
+        WHERE i.idaula = ?
+        """;
+
+        try (
+                PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, idAula);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (!rs.next()) {
+
+                    System.out.println("Nenhum aluno cadastrado.");
+                    return;
+                }
+
+                System.out.println("========AULA COLETIVA " + rs.getString("nomeaula") + " ⚡========");
+
+                do {
+
+                    System.out.println(
+                            "Aluno: " + rs.getString("nomealuno") + " | CPF: " + rs.getString("cpfaluno") + " | Data inscrição: " + rs.getDate("datainscricao")
+                    );
+
+                } while (rs.next());
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao visualizar ocupação: " + e.getMessage());
+        }
     }
 
 }
