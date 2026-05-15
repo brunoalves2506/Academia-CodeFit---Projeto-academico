@@ -21,6 +21,7 @@ O sistema tem como objetivo gerenciar as principais operações de uma academia,
 
 ---
 
+
 ## 📦 Funcionalidades Principais
 
 1. Cadastro de alunos (nome, CPF, data de nascimento, telefone e email)
